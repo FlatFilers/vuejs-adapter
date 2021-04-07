@@ -1,131 +1,199 @@
 <template>
   <div>
-    <button @click="launch">
-      Start FF Button
-    </button>
+    <button @click="launch">Start FF Button</button>
+    <!-- @todo, slot -->
     <slot></slot>
   </div>
 </template>
 
 <script>
-  import FlatfileImporter from '@flatfile/adapter';
+import FlatfileImporter from "@flatfile/adapter";
 
-  export default {
-    name: 'flatfile-button',
-    props: {
-      settings: {
-        type: Object,
-        validator: function (value) {
-          return value && value.type && value.fields;
-        }
+export default {
+  name: "flatfile-button",
+  props: {
+    settings: {
+      type: Object,
+      validator: function (value) {
+        return value && value.type && value.fields;
       },
-      customer: {
-        type: Object,
-        validator: function (value) {
-          return value && value.userId;
-        }
-      },
-      licenseKey: {
-        type: String,
-        validator: function (value) {
-          return value && value.length;
-        }
-      },
-      fieldHooks: Function,
-      source: [String, Array],
-      onCancel: Function,
-      onInteractionEvent: Function,
-      onBeforeFetch: Function,
-      onData: Function,
-      onRecordChange: Function,
-      onRecordInit: Function,
-      render: Function,
-      preload: Boolean,
-      mountUrl: String,
     },
-    data: () => ({
-      importerRef: null,
-      loaded: false,
-      preload: true
-    }),
-    // created() {
-    // },
-    mounted() {
-      if (this.$data.preload) {
-        this.loadImporter();
+    customer: {
+      type: Object,
+      validator: function (value) {
+        return value && value.userId;
+      },
+    },
+    licenseKey: {
+      type: String,
+      validator: function (value) {
+        return value && value.length;
+      },
+    },
+    fieldHooks: Object,
+    source: [String, Array],
+    onCancel: Function,
+    onInteractionEvent: Function,
+    onBeforeFetch: Function,
+    onData: Function,
+    onRecordChange: Function,
+    onRecordInit: Function,
+    render: Function,
+    preload: {
+      default: true,
+      type: Boolean,
+    },
+    mountUrl: String,
+  },
+  data: () => ({
+    flatfileImporter: null,
+    loaded: false,
+    importerLoaded: true
+  }),
+  mounted() {
+    if (this.preload) {
+      this.loadImporter();
+    }
+  },
+  methods: {
+    loadImporter: function () {
+
+      console.log('loadImporter began ')
+      console.log('this.flatfileImporter');
+      console.log(this.flatfileImporter)
+
+      if (this.flatfileImporter) {
+        return;
       }
+      
+      if (this.mountUrl) {
+        FlatfileImporter.setMountUrl(this.mountUrl);
+      }
+      const tempImporter = new FlatfileImporter(
+        this.licenseKey,
+        this.settings,
+        this.customer
+      );
+
+      console.log(`tempImporter`);
+      console.log(tempImporter);
+
+      if (this.fieldHooks) {
+        for (const key in this.fieldHooks) {
+          console.log('field hook key = ', key)
+          console.log(this.fieldHooks[key])
+          tempImporter.registerFieldHook(key, this.fieldHooks[key]);
+        }
+      }
+      if (this.onBeforeFetch) {
+        tempImporter.registerBeforeFetchCallback(this.onBeforeFetch);
+      }
+      if (this.onInteractionEvent) {
+        tempImporter.registerInteractionEventCallback(this.onInteractionEvent);
+      }
+      if (this.onRecordChange || this.onRecordInit) {
+        tempImporter.registerRecordHook(
+          (
+            record, // : ScalarDictionaryWithCustom,
+            index, // : number,
+            eventType // : 'init' | 'change'
+          ) => {
+            if (eventType === "init" && this.onRecordInit) {
+              return this.onRecordInit(record, index);
+            }
+            if (eventType === "change" && this.onRecordChange) {
+              return this.onRecordChange(record, index);
+            }
+          }
+        );
+      }
+      this.flatfileImporter = tempImporter;
+      this.loaded = true;
     },
-    methods: {
-      loadImporter: function () {
-        if (this.$data.importerRef.current) {
+
+    dataHandler: function(results) {
+      this.flatfileImporter.displayLoader();
+        this.onData?.(results).then(
+          (optionalMessage) =>
+            optionalMessage !== null
+              ? this.flatfileImporter.current?.displaySuccess(optionalMessage || undefined)
+              : this.flatfileImporter.current?.close(),
+          (error/*: Error | string*/) =>
+            this.flatfileImporter.current
+              ?.requestCorrectionsFromUser(
+                error instanceof Error ? error.message : error
+              )
+              .then(this.dataHandler, () => this.onCancel?.())
+        );
+    },
+
+    launch: function () {
+      console.log("launch hit!");
+
+      this.validateInputs();
+
+      var dataHandler = (results) => {
+        this.flatfileImporter.displayLoader();
+
+        if (this.onData) {
+          this.onData(results).then(
+            (optionalMessage) => {
+              this.flatfileImporter.displaySuccess(
+                optionalMessage || 'Success!'
+              );
+            },
+            (error) => {
+              console.error(`Flatfile Error : ${error}`);
+              this.flatfileImporter
+                .requestCorrectionsFromUser(
+                  error ? error.message : error
+                )
+                .then(dataHandler, () => this.onCancel?.());
+              }
+          );
+        } else {
+          this.flatfileImporter.displaySuccess('Success!');
+        }
+      };
+
+      if (!this.flatfileImporter) {
+        console.log('flatfileImporter false')
+        if (this.preload) {
           return;
         }
-        if (this.mountUrl) {
-          FlatfileImporter.setMountUrl(this.mountUrl);
-        }
-        const tempImporter = new FlatfileImporter(this.licenseKey, this.settings, this.customer);
-        if (this.fieldHooks) {
-          for (const key in this.fieldHooks) {
-            tempImporter.registerFieldHook(key, this.fieldHooks[key]);
-          }
-        }
-        if (this.onBeforeFetch) {
-          tempImporter.registerBeforeFetchCallback(this.onBeforeFetch);
-        }
-        if (this.onInteractionEvent) {
-          tempImporter.registerInteractionEventCallback(this.onInteractionEvent);
-        }
-        if (this.onRecordChange || this.onRecordInit) {
-          tempImporter.registerRecordHook(
-            (
-              record,    // : ScalarDictionaryWithCustom,
-              index,     // : number,
-              eventType, // : 'init' | 'change'
-            ) => {
-              if (eventType === 'init' && this.onRecordInit) {
-                return this.onRecordInit(record, index);
-              }
-              if (eventType === 'change' && this.onRecordChange) {
-                return this.onRecordChange(record, index);
-              }
-            }
-          );
-        }
-        this.importerRef.current = tempImporter;
-        this.$data.loaded = true;
-      },
-      // const dataHandler = (results/*: FlatfileResults*/) => {
-      //     this.$data.importerRef.current?.displayLoader();
-      //       onData?.(results).then(
-      //         (optionalMessage) =>
-      //           optionalMessage !== null
-      //             ? this.$data.importerRef.current?.displaySuccess(optionalMessage || undefined)
-      //             : this.$data.importerRef.current?.close(),
-      //         (error/*: Error | string*/) =>
-      //           this.$data.importerRef.current
-      //             ?.requestCorrectionsFromUser(
-      //               error instanceof Error ? error.message : error
-      //             )
-      //             .then(dataHandler, () => this.onCancel?.())
-      //       );
-      //     });
-      // ,[onData, onCancel]
-      launch: function () {
-        console.log('launch hit!');
+        this.loadImporter();
+      }
 
-        if (!this.$data.importerRef.current) {
-          if (this.preload) {
-            return;
-          }
-          this.loadImporter();
-        }
-        this.$data.importerRef.current
-          ?.requestDataFromUser({ source: this.source })
-          .then(this.dataHandler, () => this.onCancel?.());
-        }
+      var loadOptions = this.source
+        ? { source: this.source }
+        : undefined;
+
+      this.flatfileImporter.requestDataFromUser(loadOptions)
+        .then(dataHandler, () => this.onCancel?.());
+    },
+
+    validateInputs: function() {
+      if (!this.licenseKey) {
+        console.error(
+          '[Error] Flatfile VueJS Adapter - licenseKey not provided!'
+        );
+        this.isImporterLoaded = false;
+      }
+      if (!this.customer?.userId) {
+        console.error(
+          '[Error] Flatfile VueJS Adapter - customer userId not provided!'
+        );
+        this.isImporterLoaded = false;
+      }
+      if (!this.settings?.type || !this.settings?.fields) {
+        console.error(
+          '[Error] Flatfile VueJS Adapter - settings { type: String, fields: Array } not provided!'
+        );
+        this.isImporterLoaded = false;
+      }
     }
-  };
+  },
+};
 </script>
 
-<style>
-</style>
+<style></style>
