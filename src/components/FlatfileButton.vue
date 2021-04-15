@@ -1,8 +1,13 @@
 <template>
   <div>
-    <button @click="launch">Start FF Button</button>
+    <button @click="launch">
+      <slot></slot>
+      <span v-if="!hasSlotData">
+        Upload with Flatfile
+      </span>
+    </button>
     <!-- @todo, slot -->
-    <slot></slot>
+    
   </div>
 </template>
 
@@ -48,24 +53,24 @@ export default {
   data: () => ({
     flatfileImporter: null,
     loaded: false,
-    importerLoaded: true
+    importerLoaded: true,
   }),
   mounted() {
     if (this.preload) {
       this.loadImporter();
     }
   },
+  computed: {
+    hasDefaultSlot () {
+      return !!this.$slots.default;
+    },
+  },
   methods: {
     loadImporter: function () {
-
-      console.log('loadImporter began ')
-      console.log('this.flatfileImporter');
-      console.log(this.flatfileImporter)
-
       if (this.flatfileImporter) {
         return;
       }
-      
+
       if (this.mountUrl) {
         FlatfileImporter.setMountUrl(this.mountUrl);
       }
@@ -75,13 +80,8 @@ export default {
         this.customer
       );
 
-      console.log(`tempImporter`);
-      console.log(tempImporter);
-
       if (this.fieldHooks) {
         for (const key in this.fieldHooks) {
-          console.log('field hook key = ', key)
-          console.log(this.fieldHooks[key])
           tempImporter.registerFieldHook(key, this.fieldHooks[key]);
         }
       }
@@ -111,25 +111,21 @@ export default {
       this.loaded = true;
     },
 
-    dataHandler: function(results) {
+    dataHandler: function (results) {
       this.flatfileImporter.displayLoader();
-        this.onData?.(results).then(
-          (optionalMessage) =>
-            optionalMessage !== null
-              ? this.flatfileImporter.current?.displaySuccess(optionalMessage || undefined)
-              : this.flatfileImporter.current?.close(),
-          (error/*: Error | string*/) =>
-            this.flatfileImporter.current
-              ?.requestCorrectionsFromUser(
-                error instanceof Error ? error.message : error
-              )
-              .then(this.dataHandler, () => this.onCancel?.())
-        );
+      this.onData?.(results).then(
+        (optionalMessage) =>
+          optionalMessage !== null
+            ? this.flatfileImporter.current?.displaySuccess(optionalMessage || undefined)
+            : this.flatfileImporter.current?.close(),
+        (error /*: Error | string*/) =>
+          this.flatfileImporter.current
+            ?.requestCorrectionsFromUser(error instanceof Error ? error.message : error)
+            .then(this.dataHandler, () => this.onCancel?.())
+      );
     },
 
     launch: function () {
-      console.log("launch hit!");
-
       this.validateInputs();
 
       var dataHandler = (results) => {
@@ -138,60 +134,50 @@ export default {
         if (this.onData) {
           this.onData(results).then(
             (optionalMessage) => {
-              this.flatfileImporter.displaySuccess(
-                optionalMessage || 'Success!'
-              );
+              this.flatfileImporter.displaySuccess(optionalMessage || "Success!");
             },
             (error) => {
               console.error(`Flatfile Error : ${error}`);
               this.flatfileImporter
-                .requestCorrectionsFromUser(
-                  error ? error.message : error
-                )
+                .requestCorrectionsFromUser(error ? error.message : error)
                 .then(dataHandler, () => this.onCancel?.());
-              }
+            }
           );
         } else {
-          this.flatfileImporter.displaySuccess('Success!');
+          this.flatfileImporter.displaySuccess("Success!");
         }
       };
 
       if (!this.flatfileImporter) {
-        console.log('flatfileImporter false')
         if (this.preload) {
           return;
         }
         this.loadImporter();
       }
 
-      var loadOptions = this.source
-        ? { source: this.source }
-        : undefined;
+      var loadOptions = this.source ? { source: this.source } : undefined;
 
-      this.flatfileImporter.requestDataFromUser(loadOptions)
+      this.flatfileImporter
+        .requestDataFromUser(loadOptions)
         .then(dataHandler, () => this.onCancel?.());
     },
 
-    validateInputs: function() {
+    validateInputs: function () {
       if (!this.licenseKey) {
-        console.error(
-          '[Error] Flatfile VueJS Adapter - licenseKey not provided!'
-        );
+        console.error("[Error] Flatfile VueJS Adapter - licenseKey not provided!");
         this.isImporterLoaded = false;
       }
       if (!this.customer?.userId) {
-        console.error(
-          '[Error] Flatfile VueJS Adapter - customer userId not provided!'
-        );
+        console.error("[Error] Flatfile VueJS Adapter - customer userId not provided!");
         this.isImporterLoaded = false;
       }
       if (!this.settings?.type || !this.settings?.fields) {
         console.error(
-          '[Error] Flatfile VueJS Adapter - settings { type: String, fields: Array } not provided!'
+          "[Error] Flatfile VueJS Adapter - settings { type: String, fields: Array } not provided!"
         );
         this.isImporterLoaded = false;
       }
-    }
+    },
   },
 };
 </script>

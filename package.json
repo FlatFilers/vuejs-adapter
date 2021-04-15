@@ -1,6 +1,6 @@
 {
   "name": "@flatfile/vuejs",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "files": [
     "dist/*"
@@ -9,7 +9,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "build:lib": "vue-cli-service build --target lib src/index.js && npm pack && shx mv ./flatfile-vuejs-0.1.0.tgz ..",
+    "build:lib": "vue-cli-service build --target lib src/index.js && npm pack && shx mv ./flatfile-vuejs-0.1.1.tgz ..",
     "lint": "vue-cli-service lint",
     "docs:dev": "vuepress dev docs",
     "docs:build": "vuepress build docs"
