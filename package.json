@@ -1,7 +1,9 @@
 {
   "name": "@flatfile/vuejs",
   "version": "0.1.1",
-  "private": true,
+  "author": {
+    "name": "Mark Pieszak"
+  },
   "files": [
     "dist/*"
   ],
@@ -9,7 +11,9 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "build:lib": "vue-cli-service build --target lib src/index.js && npm pack && shx mv ./flatfile-vuejs-0.1.1.tgz ..",
+    "build:lib": "vue-cli-service build --target lib src/index.js && npm run delete:demo && npm pack",
+    "build:lib:local": "vue-cli-service build --target lib src/index.js && npm run delete:demo && npm pack && shx mv ./flatfile-vuejs-0.1.1.tgz ..",
+    "delete:demo": "rm -rf ./dist/demo.html",
     "lint": "vue-cli-service lint",
     "docs:dev": "vuepress dev docs",
     "docs:build": "vuepress build docs"

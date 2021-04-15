@@ -6,8 +6,6 @@
         Upload with Flatfile
       </span>
     </button>
-    <!-- @todo, slot -->
-    
   </div>
 </template>
 
