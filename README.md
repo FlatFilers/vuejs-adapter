@@ -188,8 +188,8 @@ export default {
 
 ---
 
-## Codesandbox Demo [ TO-DO ]
+## Codesandbox Demo
 
-Try it for yourself in the [CodesandBox here](https://codesandbox.io/s/xxxx).
+Try it for yourself in the [CodesandBox here](https://codesandbox.io/s/nostalgic-johnson-2wgqn?file=/src/App.vue).
 
 ---
