@@ -1,6 +1,8 @@
 {
   "name": "@flatfile/vuejs",
-  "version": "0.1.2",
+  "version": "0.2.1",
+  "homepage": "https://flatfile.io/",
+  "description": "Vue.js flatfile adapter",
   "author": {
     "name": "Mark Pieszak"
   },
@@ -8,6 +10,23 @@
     "dist/*"
   ],
   "main": "./dist/vuejs.umd.js",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FlatFilers/vuejs-adapter.git"
+  },
+  "bugs": {
+    "url": "https://github.com/FlatFilers/vuejs-adapter/issues"
+  },
+  "keywords": [
+    "flatfile",
+    "flatfile vuejs",
+    "vuejs",
+    "csv",
+    "csv import",
+    "vuejs csv",
+    "vuejs csv import"
+  ],
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
