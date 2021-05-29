@@ -60,7 +60,7 @@ export default {
     FlatfileButton,
   },
   data: () => ({
-    licenseKey: '04552f9f-f9b0-4626-9d68-00ad2f192c2f',
+    licenseKey: 'Your_License_Key_Here',
     customer: {
       userId: '12345',
     },
@@ -104,7 +104,7 @@ export default {
     FlatfileButton,
   },
   data: () => ({
-    licenseKey: '04552f9f-f9b0-4626-9d68-00ad2f192c2f',
+    licenseKey: 'Your_License_Key_Here',
     customer: {
       userId: '12345',
     },
