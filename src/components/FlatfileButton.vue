@@ -2,9 +2,6 @@
   <div>
     <button @click="launch">
       <slot></slot>
-      <span v-if="!hasSlotData">
-        Upload with Flatfile
-      </span>
     </button>
   </div>
 </template>
@@ -57,11 +54,6 @@ export default {
     if (this.preload) {
       this.loadImporter();
     }
-  },
-  computed: {
-    hasDefaultSlot () {
-      return !!this.$slots.default;
-    },
   },
   methods: {
     loadImporter: function () {

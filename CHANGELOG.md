@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.3.2
+
+Bug fix where default text from library wasn't being removed.
 
 ## 0.3.0
 

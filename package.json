@@ -1,6 +1,6 @@
 {
   "name": "@flatfile/vuejs",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "homepage": "https://flatfile.io/",
   "description": "Vue.js flatfile adapter",
   "author": {
