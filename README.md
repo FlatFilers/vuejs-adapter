@@ -128,7 +128,7 @@ export default {
           // ...
         })
       }
-    }
+    },
     fieldHooks: {
       email: (values) => {
         console.log({values});

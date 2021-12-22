@@ -79,7 +79,7 @@ export default {
         }
       }
       if (this.stepHooks) {
-        for (const key in this.fieldHooks) {
+        for (const key in this.stepHooks) {
           tempImporter.registerStepHook(key, (payload) => this.stepHooks[key](payload, tempImporter))
         }
       }
