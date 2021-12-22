@@ -86,9 +86,12 @@ Here's an example passing down many of the other optional parameters/methods ava
   :customer="customer"
   :settings="settings"
   :fieldHooks="fieldHooks"
+  :stepHooks="stepHooks"
+  :setLang="setLang"
   :onData="onData"
   :onRecordInit="onRecordInit"
   :onRecordChange="onRecordChange"
+  :onRecordHook="onRecordHook"
   :onCancel="onCancel" 
   class="ff-button"
 >
@@ -114,6 +117,17 @@ export default {
         { label: 'Name', key: 'name' },
         { label: 'Email', key: 'email' }
       ]
+    },
+    setLang: "", // language
+    stepHooks: {
+      review: (payload, importer) => {
+        // do something
+
+        // if you want to add VirtualFields, use the importer being passed into this Function
+        importer.addVirtualField({
+          // ...
+        })
+      }
     },
     fieldHooks: {
       email: (values) => {
@@ -173,6 +187,10 @@ export default {
           info: [{ message: 'added # on change', level: 'warning' }],
         },
       };
+    },
+
+    onRecordHook: function(record) {
+      // do something
     },
 
     /*

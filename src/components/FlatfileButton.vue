@@ -38,6 +38,9 @@ export default {
     onData: Function,
     onRecordChange: Function,
     onRecordInit: Function,
+    onRecordHook: Function,
+    setLang: String,
+    stepHooks: Object,
     render: Function,
     preload: {
       default: true,
@@ -75,6 +78,11 @@ export default {
           tempImporter.registerFieldHook(key, this.fieldHooks[key]);
         }
       }
+      if (this.stepHooks) {
+        for (const key in this.stepHooks) {
+          tempImporter.registerStepHook(key, (payload) => this.stepHooks[key](payload, tempImporter))
+        }
+      }
       if (this.onBeforeFetch) {
         tempImporter.registerBeforeFetchCallback(this.onBeforeFetch);
       }
@@ -97,6 +105,13 @@ export default {
           }
         );
       }
+      if (this.onRecordHook) {
+        this.tempImporter.registerRecordHook(this.onRecordHook);
+      }
+      if (this.setLang) {
+        this.tempImporter.setLang(this.setLang);
+      }
+
       this.flatfileImporter = tempImporter;
       this.loaded = true;
     },
