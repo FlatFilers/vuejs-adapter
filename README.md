@@ -211,3 +211,13 @@ export default {
 Try it for yourself in the [CodesandBox here](https://codesandbox.io/s/nostalgic-johnson-2wgqn?file=/src/App.vue).
 
 ---
+
+
+## Publishing
+
+Update changelog (if needed), update package.json version (semver), add any updates needed for README (if needed), then run the following scripts:
+
+```bash
+npm run build:local
+npm publish
+```
