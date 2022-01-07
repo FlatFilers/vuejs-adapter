@@ -106,10 +106,10 @@ export default {
         );
       }
       if (this.onRecordHook) {
-        this.tempImporter.registerRecordHook(this.onRecordHook);
+        tempImporter.registerRecordHook(this.onRecordHook);
       }
       if (this.setLang) {
-        this.tempImporter.setLang(this.setLang);
+        tempImporter.setLang(this.setLang);
       }
 
       this.flatfileImporter = tempImporter;

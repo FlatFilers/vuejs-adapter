@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.5
+
+Fix bug with `setLang` and `onRecordHook` not functioning properly.
+
 ## 0.3.4
 
 New additions & more information / example use-case in README.
