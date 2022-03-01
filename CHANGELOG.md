@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.6
+
+Fix `setLang` bug `tempImporter.setLang` is not a function.
+
 ## 0.3.5
 
 Fix bug with `setLang` and `onRecordHook` not functioning properly.

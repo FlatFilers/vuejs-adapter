@@ -109,7 +109,7 @@ export default {
         tempImporter.registerRecordHook(this.onRecordHook);
       }
       if (this.setLang) {
-        tempImporter.setLang(this.setLang);
+        tempImporter.setLanguage(this.setLang);
       }
 
       this.flatfileImporter = tempImporter;
