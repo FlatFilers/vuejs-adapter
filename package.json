@@ -1,6 +1,6 @@
 {
   "name": "@flatfile/vuejs",
-  "version": "0.3.6",
+  "version": "3.0.0-beta.2",
   "homepage": "https://flatfile.io/",
   "description": "Vue.js flatfile adapter",
   "author": {
@@ -31,14 +31,14 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "build:lib": "vue-cli-service build --target lib src/index.js && npm run delete:demo && npm pack",
-    "build:lib:local": "vue-cli-service build --target lib src/index.js && npm run delete:demo && npm pack && shx mv ./flatfile-vuejs-0.3.1.tgz ..",
+    "build:lib:local": "vue-cli-service build --target lib src/index.js && npm run delete:demo && npm pack && shx mv ./flatfile-vuejs-3.0.0-beta.2.tgz ../flatfile-vuejs-demo",
     "delete:demo": "rm -rf ./dist/demo.html",
     "lint": "vue-cli-service lint",
     "docs:dev": "vuepress dev docs",
     "docs:build": "vuepress build docs"
   },
   "dependencies": {
-    "@flatfile/adapter": "^2.8.0",
+    "@flatfile/sdk": "^1.0.5",
     "core-js": "^3.6.5"
   },
   "devDependencies": {
