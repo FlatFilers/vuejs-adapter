@@ -34,11 +34,11 @@ export default {
 
 Now in your application simply utilize this new `<flatfile-button>` component, but make sure to pass in the 1 required prop, (and/or any optional ones you may need for your application).
 
-#### The 1 required property is:
+### The 1 required property is
 
-- `:token` (String) [ get this from your Flatfile account ]
+- `:token` (String) [ which you need to get from your backend ]
 
-
+[Read more here](https://flatfile.com/docs/implementing-embeds/) on how to implement a secure token.
 
 ```html
 <flatfile-button :token="token">
@@ -121,6 +121,36 @@ export default {
 
 ---
 
+#### Additional options
+
+You can also pass down `mountUrl` and `apiUrl` to the `<flatfile-button>`.
+
+```html
+<flatfile-button 
+  :token="token"
+  :mountUrl="mountUrl"
+  :apiUrl="apiUrl"
+>
+  Upload to Flatfile!
+</flatfile-button>
+
+<script>
+import { FlatfileButton } from '@flatfile/vuejs';
+
+export default {
+  name: 'App',
+  components: {
+    FlatfileButton,
+  },
+  data: () => ({
+    token: 'Your_Token_You_Received_From_Your_Backend',
+    mountUrl: 'mountUrl',
+    apiUrl: '',
+  }),
+  // ... everything else
+}
+</script>
+```
 
 ## Publishing
 
