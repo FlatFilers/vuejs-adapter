@@ -8,6 +8,19 @@
 
 ## Getting Started with Flatfile & Vue.js
 
+> NOTE: V3 comes with some updates & breaking changes
+#### BREAKING CHANGES:
+
+Note that the latest version of `@flatfile/vuejs` 3+ uses the new `@flatfile/sdk` underneath which changes the API surface of interacting with the flatfile adapter entirely.
+
+[Read more about these changes here](https://flatfile.com/docs/implementing-embeds/)
+
+There is now only 1 required input, and that is `:token` (which you must receive from your backend), more information in the link above.
+
+[Read more about generating a Token here](https://flatfile.com/docs/sdk/)
+
+---
+
 We've made it really simple for you to get started with Flatfile with our new Flatfile Component. Here's what you'll need to know to get started.
 
 First, install the dependency via npm:
