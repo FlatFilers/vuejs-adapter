@@ -14,7 +14,7 @@ Note that the latest version of `@flatfile/vuejs` 3+ uses the new `@flatfile/sdk
 
 [Read more about these changes here](https://flatfile.com/docs/implementing-embeds/)
 
-There is now only 1 required input, and that is `:token` (which you must receive from your backend), more information in the link above.
+There is now only 1 required input, and that is `:token` (which you must receive from your backend).
 
 [Read more about generating a Token here](https://flatfile.com/docs/sdk/)
 
