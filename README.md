@@ -13,10 +13,10 @@ We've made it really simple for you to get started with Flatfile with our new Fl
 First, install the dependency via npm:
 
 ```bash
-npm install @flatfile/vuejs
+npm install @flatfile/vuejs@3
 ```
 
-This will give you access to the `<flatfile-button />` component as well as the same basic functionality as our Adapter.
+This will give you access to the `<flatfile-button />` component as well as the same basic functionality as our new SDK.
 
 Simply add the import to a component where you want to include the Flatfile vuejs adapter via
 
@@ -32,22 +32,16 @@ export default {
 }
 ```
 
-Now in your application simply utilize this new `<flatfile-button>` component, but make sure to pass in the 3 required props, (and/or any optional ones you may need for your application).
+Now in your application simply utilize this new `<flatfile-button>` component, but make sure to pass in the 1 required prop, (and/or any optional ones you may need for your application).
 
-#### The 3 required properties are:
+### The 1 required property is
 
-- `:licenseKey` (String) [ get this from your Flatfile account ]
-- `:customer` (Object)
-- `:settings` (Object)
+- `:token` (String) [ which you need to get from your backend ]
 
-
+[Read more here](https://flatfile.com/docs/implementing-embeds/) on how to implement a secure token.
 
 ```html
-<flatfile-button 
-  :licenseKey="licenseKey"
-  :customer="customer"
-  :settings="settings"
->
+<flatfile-button :token="token">
   Upload to Flatfile!
 </flatfile-button>
 
@@ -60,17 +54,7 @@ export default {
     FlatfileButton,
   },
   data: () => ({
-    licenseKey: 'Your_License_Key_Here',
-    customer: {
-      userId: '12345',
-    },
-    settings: {
-      type: 'test import',
-      fields: [
-        { label: 'Name', key: 'name' },
-        { label: 'Email', key: 'email' }
-      ]
-    },
+    token: 'Your_Token_You_Received_From_Your_Backend',    
   })
 }
 </script>
@@ -82,17 +66,13 @@ Here's an example passing down many of the other optional parameters/methods ava
 
 ```html
 <flatfile-button 
-  :licenseKey="licenseKey"
-  :customer="customer"
-  :settings="settings"
-  :fieldHooks="fieldHooks"
-  :stepHooks="stepHooks"
-  :setLang="setLang"
-  :onData="onData"
-  :onRecordInit="onRecordInit"
-  :onRecordChange="onRecordChange"
-  :onRecordHook="onRecordHook"
-  :onCancel="onCancel" 
+  :token="token"
+  :onInit="onInit"
+  :onUpload="onUpload"
+  :onLaunch="onLaunch"
+  :onClose="onClose"
+  :onComplete="onComplete"
+  :onError="onError" 
   class="ff-button"
 >
   Upload to Flatfile!
@@ -107,98 +87,33 @@ export default {
     FlatfileButton,
   },
   data: () => ({
-    licenseKey: 'Your_License_Key_Here',
-    customer: {
-      userId: '12345',
-    },
-    settings: {
-      type: 'test import',
-      fields: [
-        { label: 'Name', key: 'name' },
-        { label: 'Email', key: 'email' }
-      ]
-    },
-    setLang: "", // language
-    stepHooks: {
-      review: (payload, importer) => {
-        // do something
-
-        // if you want to add VirtualFields, use the importer being passed into this Function
-        importer.addVirtualField({
-          // ...
-        })
-      }
-    },
-    fieldHooks: {
-      email: (values) => {
-        console.log({values});
-        return values.map(([item, index]) => [
-        {
-          value: item + '@',
-          info: [{ message: 'added @ after the email', level: 'warning' }],
-        },
-        index,
-      ]);
-      }
-    }
+    token: 'Your_Token_You_Received_From_Your_Backend',
   }),
   methods: {
-    onData: function (results) {
-      let errorState = false;
-      console.log('onData results{}')
-      console.log(results);
-      console.log(results.$data)
-
-      return new Promise((resolve, reject) => {
-        setTimeout(() => {
-          if (errorState) {
-            reject('rejected - this text is controlled by the end-user');
-            errorState = false;
-          } else {
-            resolve(
-              'Flatfile upload successful - this text is controlled by the end-user'
-            );
-          }
-        }, 3000);
-      });
+    onInit: function (data) {
+      console.log('onInit')
+      console.log(data)
     },
-
-    onRecordInit: function (
-      record,
-      /*index*/
-    ) {
-      console.log('onRecordInit')
-      return {
-        email: {
-          value: record.email + '@',
-          info: [{ message: 'added @ on init', level: 'info' }],
-        },
-      };
+    onUpload: function (data) {
+      console.log('onUpload')
+      console.log('data')
     },
-
-    onRecordChange: function (
-      record,
-      /*index*/
-    ) {
-      console.log('onRecordChange')
-      return {
-        email: {
-          value: record.email + '#',
-          info: [{ message: 'added # on change', level: 'warning' }],
-        },
-      };
+    onLaunch: function (data) {
+      console.log('onLaunch')
+      console.log('data')
     },
-
-    onRecordHook: function(record) {
-      // do something
+    onClose: function (data) {
+      console.log('onClose')
+      console.log('data')
     },
-
-    /*
-    * @Output() handlers
-    */
-    onCancel: function () {
-      console.log('canceled!');
-    }
+    onComplete: function (data) {
+      console.log('onComplete')
+      console.log('data')
+    },
+    onError: function (error) {
+      console.log('onError')
+      console.log(error)
+    },
   }
 }
 </script>
@@ -206,18 +121,42 @@ export default {
 
 ---
 
-## Codesandbox Demo
+#### Additional options
 
-Try it for yourself in the [CodesandBox here](https://codesandbox.io/s/nostalgic-johnson-2wgqn?file=/src/App.vue).
+You can also pass down `mountUrl` and `apiUrl` to the `<flatfile-button>`.
 
----
+```html
+<flatfile-button 
+  :token="token"
+  :mountUrl="mountUrl"
+  :apiUrl="apiUrl"
+>
+  Upload to Flatfile!
+</flatfile-button>
 
+<script>
+import { FlatfileButton } from '@flatfile/vuejs';
+
+export default {
+  name: 'App',
+  components: {
+    FlatfileButton,
+  },
+  data: () => ({
+    token: 'Your_Token_You_Received_From_Your_Backend',
+    mountUrl: 'mountUrl',
+    apiUrl: '',
+  }),
+  // ... everything else
+}
+</script>
+```
 
 ## Publishing
 
 Update changelog (if needed), update package.json version (semver), add any updates needed for README (if needed), then run the following scripts:
 
 ```bash
-npm run build:local
+npm run build:lib
 npm publish
 ```
